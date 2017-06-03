@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="com.salesforce.etpush" version="0.0.1">
+    <name>Cordova Exact Target Plugin</name>
+    <description>A Cordova Plugin to access the Exact Target native SDKs</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,MarketingCloud,ETPush</keywords>
+    <js-module src="www/etpush.js" name="ETPush">
+        <clobbers target="ETPush" />
+    </js-module>
+
+    <preference name="DEV_APPID" />
+    <preference name="DEV_ACCESSTOKEN" />
+    <preference name="PROD_APPID" />
+    <preference name="PROD_ACCESSTOKEN" />
+    <preference name="ANALYTICS_ENABLED" />
+    <preference name="WAMA_ENABLED" />
+    <preference name="LOCATION_ENABLED" />
+    <preference name="PROXIMITY_ENABLED" />
+    <preference name="CLOUDPAGES_ENABLED" />
+
+    <platform name="ios">
+        <config-file target="*-Info.plist" parent="/*">
+            <dict>
+                <key>NSLocationAlwaysUsageDescription</key>
+                <string>Exact Target uses location in the background.</string>
+            </dict>
+            <dict>
+                <key>NSAllowsArbitraryLoads</key>
+                <true/>
+            </dict>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="ETPushSettings">
+            <dict>
+                <key>ETPUSH_DEV_APPID</key>
+                <string>$DEV_APPID</string>
+                <key>ETPUSH_DEV_ACCESSTOKEN</key>
+                <string>$DEV_ACCESSTOKEN</string>
+                <key>ETPUSH_PROD_APPID</key>
+                <string>$PROD_APPID</string>
+                <key>ETPUSH_PROD_ACCESSTOKEN</key>
+                <string>$PROD_ACCESSTOKEN</string>
+                <key>ETPUSH_ANALYTICS_ENABLED</key>
+                <string>$ANALYTICS_ENABLED</string>
+                <key>ETPUSH_WAMA_ENABLED</key>
+                <string>$WAMA_ENABLED</string>
+                <key>ETPUSH_LOCATION_ENABLED</key>
+                <string>$LOCATION_ENABLED</string>
+                <key>ETPUSH_PROXIMITY_ENABLED</key>
+                <string>$PROXIMITY_ENABLED</string>
+                <key>ETPUSH_CLOUDPAGES_ENABLED</key>
+                <string>$CLOUDPAGES_ENABLED</string>
+            </dict>
+        </config-file>
+        <config-file target="config.xml" parent="/*">
+            <feature name="ETPush">
+                <param name="ios-package" value="CDVETPush"/>
+            </feature>
+        </config-file>
+        
+        <source-file src="src/ios/AppDelegate+ETPush.m" />
+        <source-file src="src/ios/CDVETPush.m" />
+        <source-file src="src/ios/CDVETPush_ExactTargetEnhancedPushDataSource.m" />
+        <!-- <source-file src="src/ios/CDVETConstants.m" /> -->
+
+        <header-file src="src/ios/AppDelegate+ETPush.h" />
+        <header-file src="src/ios/CDVETPush.h" />
+        <header-file src="src/ios/CDVETPush_ExactTargetEnhancedPushDataSource.h" />
+        <!-- <header-file src="src/ios/CDVETConstants.h" /> -->
+
+
+        <header-file src="src/ios/ETPushSDK/ETBulkUpdateShim.h" />
+        <header-file src="src/ios/ETPushSDK/ETEvent.h" />
+        <header-file src="src/ios/ETPushSDK/ETFenceMessage.h" />
+        <header-file src="src/ios/ETPushSDK/ETGenericUpdate.h" />
+        <header-file src="src/ios/ETPushSDK/ETKeyValueStore.h" />
+        <header-file src="src/ios/ETPushSDK/ETLandingPagePresenter.h" />
+        <header-file src="src/ios/ETPushSDK/ETLocationManager.h" />
+        <header-file src="src/ios/ETPushSDK/ETLocationUpdate.h" />
+        <header-file src="src/ios/ETPushSDK/ETMessage.h" />
+        <header-file src="src/ios/ETPushSDK/ETPhoneHome.h" />
+        <header-file src="src/ios/ETPushSDK/ETPush.h" />
+        <header-file src="src/ios/ETPushSDK/ETRegion.h" />
+        <header-file src="src/ios/ETPushSDK/ETRegistration.h" />
+        <header-file src="src/ios/ETPushSDK/ETSqliteHelper.h" />
+        <header-file src="src/ios/ETPushSDK/ETStatsUpdate.h" />
+        <header-file src="src/ios/ETPushSDK/ETURLConnection.h" />
+        <header-file src="src/ios/ETPushSDK/ExactTargetEnhancedPushDataSource.h" />
+        <header-file src="src/ios/ETPushSDK/PushConstants.h" />
+        <header-file src="src/ios/ETPushSDK/PIEvent.h" />
+
+        <source-file src="src/ios/ETPushSDK/libJB4ASDK-4.0.2.a" framework="true" />
+        <framework src="libsqlite3.dylib" />
+        <framework src="CoreLocation.framework/" />
+    </platform>
+
+    <platform name="android">
+    		<hook type="after_prepare" src="scripts/android_after_prepare.js" />
+		    <preference name="DEV_GCMSENDERID" />    
+        <preference name="PROD_GCMSENDERID" />    
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="ETPush">
+                <param name="android-package" value="com.salesforce.etpush.ETPushCordovaPlugin"/>
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+           <permission
+               android:name="$PACKAGE_NAME.permission.C2D_MESSAGE"
+               android:protectionLevel="signature" />
+           <uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
+           <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+           <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+           <uses-permission android:name="android.permission.INTERNET"/>
+           <uses-permission android:name="android.permission.WAKE_LOCK"/>
+           <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+           <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>      
+           <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>      
+           <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>    
+           <uses-permission android:name="android.permission.BLUETOOTH" />
+    			 <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application" android:name="$PACKAGE_NAME.ETPushCordovaApplication">
+         <!-- ETPushReceiver and Service -->
+         <receiver
+             android:exported="true"
+             android:name="com.exacttarget.etpushsdk.ETPushReceiver"
+             android:permission="com.google.android.c2dm.permission.SEND">
+             <intent-filter>
+                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+
+                 <category android:name="$PACKAGE_NAME" />
+             </intent-filter>
+             <intent-filter>
+                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                 <action android:name="android.intent.action.BATTERY_LOW" />
+                 <action android:name="android.intent.action.BATTERY_OKAY" />
+             </intent-filter>
+             <intent-filter>
+                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                 <data android:scheme="package" />
+             </intent-filter>
+             <intent-filter>
+                 <action android:name="$PACKAGE_NAME.MESSAGE_OPENED" />
+                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+             </intent-filter>
+         </receiver>
+     
+         <service
+             android:name="com.exacttarget.etpushsdk.ETPushService"
+             android:enabled="true" />
+         <!-- ETPushReceiver and Service -->
+
+        <!-- ETLocationReceiver and Service -->
+        <receiver android:name="com.exacttarget.etpushsdk.ETLocationReceiver">
+            <intent-filter>
+                <action android:name="android.location.PROVIDERS_CHANGED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+       	</receiver>
+
+        <service
+            android:name="com.exacttarget.etpushsdk.ETLocationService"
+            android:enabled="true" />
+        <!-- ETLocationReceiver and Service -->
+
+         <!-- JB4A SDK Activity required for Cloud Page or Open Direct URLs sent from Marketing Cloud -->
+         <activity
+            android:name="com.exacttarget.etpushsdk.ETLandingPagePresenter"
+            android:label="Landing Page" />
+         <!-- JB4A SDK Activity required for Cloud Page or Open Direct URLs sent from Marketing Cloud -->
+         <activity android:name="com.salesforce.etpush.ETPushCordovaLandingPagePassthrough" />
+
+         <!-- Google Play Services version.  Using the resource file will require your project contain the Google Play services project. -->
+         <!-- See Google documentation for more information -->
+         <meta-data
+             android:name="com.google.android.gms.version"
+             android:value="@integer/google_play_services_version" /> 
+
+        </config-file>
+
+        <source-file src="src/android/res/values/secrets.xml" target-dir="res/values/" />
+        <config-file target="res/values/secrets.xml" parent="/resources">
+          <string name="ETPUSH_DEV_APPID">$DEV_APPID</string>
+          <string name="ETPUSH_DEV_ACCESSTOKEN">$DEV_ACCESSTOKEN</string>
+          <string name="ETPUSH_DEV_GCMSENDERID">$DEV_GCMSENDERID</string>
+          <string name="ETPUSH_PROD_APPID">$PROD_APPID</string>
+          <string name="ETPUSH_PROD_ACCESSTOKEN">$PROD_ACCESSTOKEN</string>
+          <string name="ETPUSH_PROD_GCMSENDERID">$PROD_GCMSENDERID</string>
+          <bool name="ETPUSH_ANALYTICS_ENABLED">$ANALYTICS_ENABLED</bool>
+          <bool name="ETPUSH_WAMA_ENABLED">$WAMA_ENABLED</bool>
+          <bool name="ETPUSH_LOCATION_ENABLED">$LOCATION_ENABLED</bool>
+          <bool name="ETPUSH_PROXIMITY_ENABLED">$PROXIMITY_ENABLED</bool>
+          <bool name="ETPUSH_CLOUDPAGES_ENABLED">$CLOUDPAGES_ENABLED</bool>          
+        </config-file>
+
+        <framework src="com.google.android.gms:play-services-gcm:7.8.0" />
+        <framework src="com.google.android.gms:play-services-location:7.8.0" />
+        <framework src="com.android.support:support-v4:22.2.0" />
+        <framework src="com.radiusnetworks:AndroidIBeaconLibrary:0.7.6" />
+
+        <source-file src="src/android/CONSTS.java" target-dir="src/com/salesforce/etpush" />
+        <source-file src="src/android/ETPushCordovaApplication.java" target-dir="src/com/salesforce/etpush" /> 
+        <source-file src="src/android/ETPushCordovaPlugin.java" target-dir="src/com/salesforce/etpush" /> 
+        <source-file src="src/android/ETPushCordovaLandingPagePassthrough.java" target-dir="src/com/salesforce/etpush" /> 
+        <source-file src="src/android/etsdk-4.0.7.jar" target-dir="libs" />
+     </platform>          
+
+</plugin>
